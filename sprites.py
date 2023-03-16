@@ -4,6 +4,8 @@ from pygame.sprite import Sprite
 
 from settings import *
 
+from random import randint
+
 vec = pg.math.Vector2
 
 # player class
@@ -34,13 +36,13 @@ class Player(Sprite):
     # method to keep sprite on screen 
     def inbounds (self):
         if self.rect.x > WIDTH:
-            self.pos.x = 0
+            self.vel.x *= -1
         if self.rect.x < 0:
-            self.pos.x = 800
+            self.vel.x *= -1
         if self.rect.y > HEIGHT:
-            self.pos.y = 0
+            self.vel.y *= -1
         if self.rect.y < 0:
-            self.pos.y = 600
+            self.vel.y *= -1
 
 
     def update(self):
@@ -52,39 +54,31 @@ class Player(Sprite):
         self.rect.center = self.pos
 
 class Mob(Sprite):
-    def __init__(self,width,height):
+    def __init__(self,width,height,color):
         Sprite.__init__(self)
         self.width = width
         self.height = height
+        self.color = color
         self.image = pg.Surface((self.width,self.height))
-        self.image.fill(RED)
+        self.image.fill(self.color)
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH/2, HEIGHT/2)
         self.pos = vec(WIDTH/2, HEIGHT/2)
-        self.vel = vec(0,0)
-        self.acc = vec(0,0)
-        self.cofric = 0.1
+        self.vel = vec(randint(1,5),randint(1,5))
+        self.acc = vec(1,1)
+        self.cofric = 0.01
     # method to keep sprite on screen 
     def inbounds (self):
         if self.rect.x > WIDTH:
-            self.pos.x = 0
+            self.vel.x *= -1
         if self.rect.x < 0:
-            self.pos.x = 800
+            self.vel.x *= -1
         if self.rect.y > HEIGHT:
-            self.pos.y = 0
+            self.vel.y *= -1
         if self.rect.y < 0:
-            self.pos.y = 600
-
-    def behavior(self):
-        print(self.vel)
-        self.acc.y = -2
-
+            self.vel.y *= -1
 
     def update(self):
-        #self.inbounds()
-        self.acc = self.vel * -0.2
-        self.vel += self.acc
-        self.behavior()
-        self.pos += self.vel + 0.5 * self.acc
+        self.inbounds()
+        self.pos += self.vel
         self.rect.center = self.pos
-

@@ -8,6 +8,8 @@
 # Sources: http://kidscancode.org/blog/2016/08/pygame_1-1_getting-started/
 # Sources: 
 
+# testing github changes
+
 # import libs
 import pygame as pg
 import random
@@ -25,6 +27,13 @@ def get_mouse_now():
     x,y = pg.mouse.get_pos()
     return (x,y)
 
+def draw_text(text, size, color, x, y):
+    font_name = pg.font.match_font('impact')
+    font = pg.font.Font(font_name, size)
+    text_surface = font.render(text, True, color)
+    text_rect = text_surface.get_rect()
+    text_rect.center = (x,y)
+    screen.blit(text_surface, text_rect)
 
 # init pg and create window
 pg.init()
@@ -38,10 +47,17 @@ all_sprites = pg.sprite.Group()
 enemies = pg.sprite.Group()
 player = Player()
 
-enemy1 = Mob(60,80)
-
 all_sprites.add(player)
-all_sprites.add(enemy1)
+player.pos= (WIDTH /2, 150)
+
+# loop that creates 20 enemies in random sizes
+for i in range (0,20):
+    # instantiate 20 mobs
+    m = Mob(randint(30,90), randint(30,90), (255,255,0))
+    # adds to all sprites group
+    all_sprites.add(m)
+    enemies.add(m)
+
 # all_sprites.add(testSprite)
 
 
@@ -60,13 +76,20 @@ while RUNNING:
     ### update section of game loop (if updates take longer the 1/30th of a second, you will get laaaaag...)
     all_sprites.update()
 
+    # if player hits enemies
     blocks_hit_list = pg.sprite.spritecollide(player, enemies, True)
+
     for block in blocks_hit_list:
-        # print(enemies)
+        SCORE += 1
+
         pass
+
     ### draw and render section of game loop
     screen.fill(BLUE)
     all_sprites.draw(screen)
+
+    score_text = "YOUR SCORE IS " + str(SCORE)
+    draw_text(score_text, 24, BLACK, WIDTH /2, 100)
     # double buffering draws frames for entire screen
     pg.display.flip()
     # pg.display.update() -> only updates a portion of the screen
