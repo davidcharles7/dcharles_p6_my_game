@@ -23,75 +23,69 @@ from sprites import *
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, "img")
 
-def get_mouse_now():
-    x,y = pg.mouse.get_pos()
-    return (x,y)
+# make game class to pass properties to sprites file
 
-def draw_text(text, size, color, x, y):
-    font_name = pg.font.match_font('impact')
-    font = pg.font.Font(font_name, size)
-    text_surface = font.render(text, True, color)
-    text_rect = text_surface.get_rect()
-    text_rect.center = (x,y)
-    screen.blit(text_surface, text_rect)
+class Game:
+    def __init__(self):
+        #gives pg access to windows stuff
+        pg.init()
+        pg.mixer.init()
+        self.screen = pg.display.set_mode((WIDTH,HEIGHT))
+        pg.display.set_caption("My Game")
+        self.clock = pg.time.Clock()
+        self.running = True
+        print(self.screen)
 
-# init pg and create window
-pg.init()
-# init sound mixer
-pg.mixer.init()
-screen = pg.display.set_mode((WIDTH, HEIGHT))
-pg.display.set_caption("My first game...")
-clock = pg.time.Clock() 
+    def new(self):
+        self.score = 0
+        self.all_sprites = pg.sprite.Group()
+        self.platforms = pg.sprite.Group()
+        self.enemies = pg.sprite.Group
+        self.player = Player(self)
+        self.all_sprites.add(self.player)
+        for i in range(0,10):
+            m = Mob(20,20,(0,255,0))
+            self.all_sprites.add(m)
+            self.enemies.add(m)
+        self.run()
+    def run(self):
+        self.playing = True
+        while self.playing:
+            self.clock.tick(FPS)
+            self.events()
+            self.update()
+            self.draw()
+    
+    def events(self):
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                if self.playing:
+                    self.playing = False
+                self.running = False
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_SPACE:
+                    self.player.jump()
+    def update(self):
+        self.all_sprites.update()
+    def draw(self):
+        self.screen.fill(BLUE)
+        self.all_sprites.draw(self.screen)
+        pg.display.flip()
+        # method 
+    def draw_text(self, text, size, color, x, y):
+        font_name = pg.font.match_font('impact')
+        font = pg.font.Font(font_name, size)
+        text_surface = font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+        text_rect.center = (x,y)
+        self.screen.blit(text_surface, text_rect)
+    def get_mouse_now(self):
+        x,y = pg.mouse.get_pos()
+        return (x,y)
 
-all_sprites = pg.sprite.Group()
-enemies = pg.sprite.Group()
-player = Player()
+g = Game()
 
-all_sprites.add(player)
-player.pos= (WIDTH /2, 150)
+while g.running:
+    g.new()
 
-# loop that creates 20 enemies in random sizes
-for i in range (0,20):
-    # instantiate 20 mobs
-    m = Mob(randint(30,90), randint(30,90), (255,255,0))
-    # adds to all sprites group
-    all_sprites.add(m)
-    enemies.add(m)
-
-# all_sprites.add(testSprite)
-
-
-# game loop
-
-while RUNNING:
-    #  keep loop running at the right speed
-    clock.tick(FPS)
-    ### process input events section of game loop
-    for event in pg.event.get():
-        # check for window closing
-        if event.type == pg.QUIT:
-            RUNNING = False
-            # break
-    # print(get_mouse_now())
-    ### update section of game loop (if updates take longer the 1/30th of a second, you will get laaaaag...)
-    all_sprites.update()
-
-    # if player hits enemies
-    blocks_hit_list = pg.sprite.spritecollide(player, enemies, True)
-
-    for block in blocks_hit_list:
-        SCORE += 1
-
-        pass
-
-    ### draw and render section of game loop
-    screen.fill(BLUE)
-    all_sprites.draw(screen)
-
-    score_text = "YOUR SCORE IS " + str(SCORE)
-    draw_text(score_text, 24, BLACK, WIDTH /2, 100)
-    # double buffering draws frames for entire screen
-    pg.display.flip()
-    # pg.display.update() -> only updates a portion of the screen
-# ends program when loops evaluates to false
 pg.quit()

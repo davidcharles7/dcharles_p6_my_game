@@ -11,8 +11,10 @@ vec = pg.math.Vector2
 # player class
 
 class Player(Sprite):
-    def __init__(self):
+    def __init__(self,game):
         Sprite.__init__(self)
+        # these are the properties
+        self.game = game
         self.image = pg.Surface((50,50))
         self.image.fill(BLACK)
         self.rect = self.image.get_rect()
@@ -34,15 +36,22 @@ class Player(Sprite):
         elif keystate[pg.K_s]:
             self.acc.y = PLAYER_ACC
     # method to keep sprite on screen 
+    def jump(self):
+        hits = pg.sprite.spritecollide(self,self.game.platforms, False)
+
     def inbounds (self):
-        if self.rect.x > WIDTH:
-            self.vel.x *= -1
-        if self.rect.x < 0:
-            self.vel.x *= -1
-        if self.rect.y > HEIGHT:
-            self.vel.y *= -1
-        if self.rect.y < 0:
-            self.vel.y *= -1
+        if self.rect.x > WIDTH-25:
+            self.pos.x = 775
+            self.vel.x *= 0
+        if self.rect.x < 25:
+            self.pos.x = 25
+            self.vel.x *= 0
+        if self.rect.y > HEIGHT-25:
+            self.pos.y = 575
+            self.vel.y *= 0
+        if self.rect.y < 25:
+            self.pos.y = 25
+            self.vel.y *= 0
 
 
     def update(self):
@@ -71,12 +80,16 @@ class Mob(Sprite):
     def inbounds (self):
         if self.rect.x > WIDTH:
             self.vel.x *= -1
+            self.pos.x = 800
         if self.rect.x < 0:
             self.vel.x *= -1
+            self.pos.x = 0
         if self.rect.y > HEIGHT:
             self.vel.y *= -1
+            self.pos.y = 600
         if self.rect.y < 0:
             self.vel.y *= -1
+            self.pos.y = 0
 
     def update(self):
         self.inbounds()
