@@ -1,6 +1,6 @@
 import pygame as pg
 from pygame.sprite import Sprite
-from settings import *
+from settings_test import *
 from random import randint
 
 
@@ -22,11 +22,11 @@ class Player(Sprite):
         self.acc = vec(0,0)
         self.cofric = 0.1
         self.canjump = False
+        self.standing = False
     def input(self):
         keystate = pg.key.get_pressed()
         # if keystate[pg.K_w]:
         #     self.acc.y = -PLAYER_ACC
-        #     print('im inputting...')
         if keystate[pg.K_a]:
             self.acc.x = -PLAYER_ACC
         # if keystate[pg.K_s]:
@@ -45,8 +45,8 @@ class Player(Sprite):
         self.rect.x += 1
         hits = pg.sprite.spritecollide(self, self.game.platforms, False)
         self.rect.x -= 1
-        if hits:
-            self.vel.y = -PLAYER_JUMP
+        # if hits:
+        self.vel.y = -PLAYER_JUMP
     
     def inbounds(self):
         if self.rect.x > WIDTH - 50:
@@ -68,12 +68,11 @@ class Player(Sprite):
                 self.game.score += 1
                 print(SCORE)
     def update(self):
-        self.acc = vec(0, PLAYER_GRAV) 
+        self.acc = vec(0, PLAYER_GRAV)
         self.acc.x = self.vel.x * PLAYER_FRICTION
         self.input()
         self.vel += self.acc
         self.pos += self.vel + 0.5 * self.acc
-        self.rect.center = self.pos
         self.rect.midbottom = self.pos
 
 class Mob(Sprite):
