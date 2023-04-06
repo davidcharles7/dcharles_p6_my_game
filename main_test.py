@@ -48,10 +48,10 @@ class Game:
             p = Platform(*plat)
             self.all_sprites.add(p)
             self.platforms.add(p)
-        for i in range(0,10):
-            m = Mob(20,20,(0,255,0))
-            self.all_sprites.add(m)
-            self.enemies.add(m)
+        # for i in range(0,10):
+        #     m = Mob(20,20,(0,255,0))
+        #     self.all_sprites.add(m)
+        #     self.enemies.add(m)
         self.run()
     def run(self):
         self.playing = True
@@ -77,42 +77,59 @@ class Game:
                 if event.key == pg.K_SPACE:
                     self.player.jump()
 
-    def you_died(self):
-        self.draw_text("PRESS E TO RESPAWN", 72, WHITE, WIDTH/2, 100)
-        for event in pg.event.get():
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_e:
-                    self.player.pos = (WIDTH/2, HEIGHT/2)
-                    
-
     def update(self):
         self.all_sprites.update()
+        self.player.inbounds()
         # if the player is falling
         if self.player.vel.y > 0:
             hits = pg.sprite.spritecollide(self.player, self.platforms, False)
             if hits:
                 self.player.standing = True
+                self.player.living = True
                 if hits[0].variant == "disappearing":
                     hits[0].kill()
                 elif hits[0].variant == "bouncey":
                     self.player.pos.y = hits[0].rect.top
                     self.player.vel.y = -PLAYER_JUMP
                 elif hits[0].variant == "danger":
-                    self.you_died()
+                    # self.player.kill()
+                    self.player.standing = False
+                    self.player.living = False
+                    for event in pg.event.get():
+                        if event.type == pg.KEYDOWN:
+                            if event.key == pg.K_e:
+                                self.player.pos = (30, 375)
+                elif hits[0].variant == "offscreen":
+                    # self.player.kill()
+                    self.player.standing = True
+                    self.player.living = False
                 else:
                     self.player.pos.y = hits[0].rect.top
                     self.player.vel.y = 0
             else:
                 self.player.standing = False
-        
-            
+        # if self.player.living == False:
+        #     # self.draw_text("PRESS E TO RESPAWN", 72, WHITE, WIDTH/2, 100)
+        #     for event in pg.event.get():
+        #         if event.type == pg.KEYDOWN:
+        #             if event.key == pg.K_e:
+        #                 self.player.pos = (20, 375)
+
+    
 
     def draw(self):
+        self.player.inbounds()
         self.screen.fill(BLUE)
         self.all_sprites.draw(self.screen)
         if self.player.standing:
+            # self.draw_text("I hit a plat!", 24, WHITE, WIDTH/2, HEIGHT/2)
             pass
-            self.draw_text("I hit a plat!", 24, WHITE, WIDTH/2, HEIGHT/2)
+        if self.player.living == False:
+            self.draw_text("PRESS E TO RESPAWN", 72, WHITE, WIDTH/2, 100)
+            for event in pg.event.get():
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_e:
+                        self.player.pos = (50, 20)  
         # is this a method or a function?
         pg.display.flip()
     def get_mouse_now(self):

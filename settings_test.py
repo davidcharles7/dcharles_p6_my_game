@@ -19,8 +19,10 @@ SCORE = 0
 PAUSED = False
 
 # Starting platforms
-PLATFORM_LIST = [(0, HEIGHT - 40, WIDTH, 40, ORANGE, "danger"),
-                 (WIDTH / 2 - 50, HEIGHT * 3 / 4, 100, 20, GRAY, "normal"),
+PLATFORM_LIST = [(0, HEIGHT - 40, WIDTH, 450, ORANGE, "danger"),
+                 (0, HEIGHT * 3 / 4, 100, 20, GRAY, "normal"),
                  (125, HEIGHT - 350, 100, 5, GREEN, "disappearing "),
                  (350, 200, 100, 20, GREEN, "normal"),
-                 (175, 100, 50, 20, GREEN, "normal")]
+                 (175, 100, 50, 20, GREEN, "normal"),
+                 (0, 1000, WIDTH, 40, BLACK, "offscreen")
+                ]

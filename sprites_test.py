@@ -17,12 +17,13 @@ class Player(Sprite):
         self.image.fill(BLACK)
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH/2, HEIGHT/2)
-        self.pos = vec(WIDTH/2, HEIGHT/2)
+        self.pos = vec(20, HEIGHT/2)
         self.vel = vec(0,0)
         self.acc = vec(0,0)
         self.cofric = 0.1
         self.canjump = False
         self.standing = False
+        self.living = True
     def input(self):
         keystate = pg.key.get_pressed()
         # if keystate[pg.K_w]:
@@ -45,8 +46,8 @@ class Player(Sprite):
         self.rect.x += 1
         hits = pg.sprite.spritecollide(self, self.game.platforms, False)
         self.rect.x -= 1
-        # if hits:
-        self.vel.y = -PLAYER_JUMP
+        if hits:
+            self.vel.y = -PLAYER_JUMP
     
     def inbounds(self):
         if self.rect.x > WIDTH - 50:
@@ -58,9 +59,11 @@ class Player(Sprite):
             self.vel.x = 0
             print("i am off the left side of the screen...")
         if self.rect.y > HEIGHT:
-            print("i am off the bottom of the screen")
-        if self.rect.y < 0:
-            print("i am off the top of the screen...")
+            # self.living = False
+            for event in pg.event.get():
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_e:
+                        self.pos = (30, 375)
     def mob_collide(self):
             hits = pg.sprite.spritecollide(self, self.game.enemies, True)
             if hits:
