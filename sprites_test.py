@@ -59,11 +59,7 @@ class Player(Sprite):
             self.vel.x = 0
             print("i am off the left side of the screen...")
         if self.rect.y > HEIGHT:
-            # self.living = False
-            for event in pg.event.get():
-                if event.type == pg.KEYDOWN:
-                    if event.key == pg.K_e:
-                        self.pos = (30, 375)
+            self.living = False
     def mob_collide(self):
             hits = pg.sprite.spritecollide(self, self.game.enemies, True)
             if hits:
