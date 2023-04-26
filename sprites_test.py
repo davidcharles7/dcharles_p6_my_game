@@ -60,6 +60,7 @@ class Player(Sprite):
             print("i am off the left side of the screen...")
         if self.rect.y > HEIGHT:
             self.living = False
+        
     def mob_collide(self):
             hits = pg.sprite.spritecollide(self, self.game.enemies, True)
             if hits:
@@ -97,6 +98,7 @@ class Mob(Sprite):
             self.vel.x *= -1
             # self.acc = self.vel * -self.cofric
         if self.rect.y < 0:
+            self.pos.y = 25
             self.vel.y *= -1
             # self.acc = self.vel * -self.cofric
         if self.rect.y > HEIGHT:

@@ -1,12 +1,4 @@
-# File created by: Chris Cozort
-# Agenda:
-# gIT GITHUB    
-# Build file and folder structures
-# Create libraries
-# testing github changes
-# I changed something - I changed something else tooooo!
-
-# This file was created by: Chris Cozort
+# This file was created by: david charles
 # Sources: http://kidscancode.org/blog/2016/08/pygame_1-1_getting-started/
 # Sources: 
 
@@ -60,6 +52,7 @@ class Game:
             self.events()
             self.update()
             self.draw()
+    #blits text on screen
     def draw_text(self, text, size, color, x, y):
         font_name = pg.font.match_font('arial')
         font = pg.font.Font(font_name, size)
@@ -76,47 +69,35 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_SPACE:
                     self.player.jump()
+                #respawn only works if player is dead
+                if event.key == pg.K_e:
+                    if self.player.living == False:
+                        self.player.pos = (30, 375)
+                        self.player.living = True
 
     def update(self):
         self.all_sprites.update()
         self.player.inbounds()
-        # if the player is falling
-        if self.player.pos.y > HEIGHT-40:
-            self.player.standing = False
-            self.player.living = True
-            for event in pg.event.get():
-                if event.type == pg.KEYDOWN:
-                    if event.key == pg.K_e:
-                        self.player.pos = (30, 375)
-        if self.player.living == False:
-            self.player.living = True
-            for event in pg.event.get():
-                if event.type == pg.KEYDOWN:
-                    if event.key == pg.K_e:
-                        self.player.pos = (30, 375)
         if self.player.vel.y > 0:
             hits = pg.sprite.spritecollide(self.player, self.platforms, False)
             if hits:
                 self.player.standing = True
-                # self.player.living = True
+                self.player.living = True
                 if hits[0].variant == "disappearing":
                     hits[0].kill()
                 elif hits[0].variant == "bouncey":
                     self.player.pos.y = hits[0].rect.top
-                    self.player.vel.y = -PLAYER_JUMP
+                    self.player.vel.y = -1.2*PLAYER_JUMP
+                #player will fall into the void
                 elif hits[0].variant == "danger":
                     self.player.standing = False
                     self.player.living = False
-                    for event in pg.event.get():
-                        if event.type == pg.KEYDOWN:
-                            if event.key == pg.K_e:
-                                self.player.pos = (30, 375)
-                
                 else:
                     self.player.pos.y = hits[0].rect.top
                     self.player.vel.y = 0
             else:
                 self.player.standing = False
+        
 
     def draw(self):
         self.player.inbounds()
@@ -127,12 +108,7 @@ class Game:
             pass
         if self.player.living == False:
             self.draw_text("PRESS E TO RESPAWN", 72, WHITE, WIDTH/2, 100) 
-            self.player.standing = False
-            self.player.living = False
-            for event in pg.event.get():
-                if event.type == pg.KEYDOWN:
-                    if event.key == pg.K_e:
-                        self.player.pos = (30, 375)
+            
         # is this a method or a function?
         pg.display.flip()
     def get_mouse_now(self):
